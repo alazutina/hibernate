@@ -2,11 +2,13 @@ package com.anna.crud.repository.hibernate;
 
 import com.anna.crud.model.Post;
 import com.anna.crud.model.Tag;
+import com.anna.crud.model.Writer;
 import com.anna.crud.repository.PostRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Set;
@@ -21,8 +23,10 @@ public class HibernatePostRepositoryImpl implements PostRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            Post post = (Post) session.get(Post.class, id);
-            Set<Tag> tl = post.getTags();
+
+            Query query = session.createQuery("from Post p Left Join FETCH p.tags where p.id = "+ id , Post.class);
+            Post post = (Post) query.getSingleResult();
+
              transaction.commit();
                        return post;
         } catch (Exception e) {
@@ -84,7 +88,11 @@ public  Post save(Post post){
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            List<Post> postsList = session.createQuery("from Post").list();// session.createQuery("FROM tags").list();
+
+            Query query = session.createQuery("from Post p Left Join FETCH p.tags ", Post.class);
+            List<Post> postsList = query.getResultList();
+
+          //  List<Post> postsList = session.createQuery("from Post").list();// session.createQuery("FROM tags").list();
             transaction.commit();
             return postsList;
         }

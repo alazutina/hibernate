@@ -17,7 +17,7 @@ public class Post {
     @Column(name="CONTENT")
     private  String content;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tag_post",
             joinColumns = { @JoinColumn(name = "ID_POST") },
             inverseJoinColumns = { @JoinColumn(name = "ID_TAG") })

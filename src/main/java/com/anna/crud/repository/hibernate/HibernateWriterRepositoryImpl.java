@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
+
 import java.util.List;
 import java.util.Set;
 
@@ -19,8 +21,9 @@ public class HibernateWriterRepositoryImpl implements WriterRepository {
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            Writer writer = (Writer) session.get(Writer.class,id) ;
-           Set<Post> post  = writer.getPosts();
+
+            Query query = session.createQuery("from Writer w Left Join FETCH w.posts p left join fetch p.tags where w.id = "+ id , Writer.class);
+            Writer writer = (Writer) query.getSingleResult();
             transaction.commit();
             return writer;
         } catch (Exception e) {
@@ -79,7 +82,10 @@ System.out.println(writer);
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
-            List<Writer> writers = session.createQuery("from Writer").list();// session.createQuery("FROM tags").list();
+
+            Query query = session.createQuery("from Writer w Left Join FETCH w.posts p left join fetch p.tags", Writer.class);
+            List<Writer> writers = query.getResultList();
+
             transaction.commit();
             return writers;
         }
