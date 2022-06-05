@@ -14,38 +14,36 @@ public class HibernateTagRepositoryImpl implements TagRepository  {
     private static SessionFactory sessionFactory= new Configuration().configure().buildSessionFactory();
 
         public Tag getById(Long id) {
-            Session session = this.sessionFactory.openSession();
             Transaction transaction = null;
-            try {
+            try(   Session session = this.sessionFactory.openSession()){
                 transaction = session.beginTransaction();
                 Tag tag = (Tag) session.get(Tag.class, id);
                 transaction.commit();
                 return tag;
             }
             catch (Exception e){
-                if(transaction !=null){}
+                if (transaction != null) {
+                    System.out.println("");
+                }
                 e.printStackTrace();
-            }finally {
-                session.close();
             }
             return null;
              }
 
 //3
         public Tag save(Tag tag1){    // public void addTag(long id, String name) {
-        Session session = sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try(Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             Tag tag = new Tag(tag1.getId(), tag1.getName());
             session.save(tag);//    session.save(tag);
             transaction.commit();
         return  tag;}
         catch (Exception e){
-            if(transaction !=null){}
+            if (transaction != null) {
+                System.out.println("");
+            }
             e.printStackTrace();
-        }finally {
-            session.close();
         }
         return null;
     }
@@ -53,9 +51,8 @@ public class HibernateTagRepositoryImpl implements TagRepository  {
 
     //4
         public Tag update(Tag t) {//    public void updateTag(long id, String name) {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try (     Session session = this.sessionFactory.openSession()){
             transaction = session.beginTransaction();
             Tag tag = (Tag) session.get(Tag.class, t.getId());
             tag.setName(t.getName());
@@ -64,10 +61,10 @@ public class HibernateTagRepositoryImpl implements TagRepository  {
             return tag;
         }
         catch (Exception e){
-            if(transaction !=null){}
+            if (transaction != null) {
+                System.out.println("");
+            }
             e.printStackTrace();
-        }finally {
-            session.close();
         }
         return null;
     }
@@ -75,29 +72,26 @@ public class HibernateTagRepositoryImpl implements TagRepository  {
 
 //1
     public List<Tag> getAll() {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try(      Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             List<Tag> tagList = session.createQuery("from Tag").list();// session.createQuery("FROM tags").list();
             transaction.commit();
             return tagList;
         }
         catch (Exception e){
-            if(transaction !=null){}
+            if (transaction != null) {
+                System.out.println("");
+            }
             e.printStackTrace();
-        }
-        finally {
-            session.close();
         }
         return null;
     }
 
 //2
         public void deleteById(Long id) {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try (        Session session = this.sessionFactory.openSession()){
             transaction = session.beginTransaction();
             Tag tag = (Tag) session.get(Tag.class, id);
              for(Post p: tag.getPostsSet()) {
@@ -108,10 +102,10 @@ public class HibernateTagRepositoryImpl implements TagRepository  {
             transaction.commit();
         }
         catch (Exception e){
-            if(transaction !=null){}
+            if (transaction != null) {
+                System.out.println("");
+            }
             e.printStackTrace();
-        }finally {
-            session.close();
         }
     }
     }

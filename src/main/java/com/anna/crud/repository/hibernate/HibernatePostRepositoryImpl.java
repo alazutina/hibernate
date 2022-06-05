@@ -19,45 +19,36 @@ public class HibernatePostRepositoryImpl implements PostRepository {
 
     //5
     public Post getById(Long id) {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try (     Session session = this.sessionFactory.openSession()){
             transaction = session.beginTransaction();
-
             Query query = session.createQuery("from Post p Left Join FETCH p.tags where p.id = "+ id , Post.class);
             Post post = (Post) query.getSingleResult();
-
-             transaction.commit();
-                       return post;
+            transaction.commit();
+            return post;
         } catch (Exception e) {
             if (transaction != null) {
+                System.out.println("");
             }
             e.printStackTrace();
-        } finally {
-            session.close();
         }
         return null;
     }
 
     //1
 public  Post save(Post post){
-
-   //2
-    // System.out.println("!!"+post);
         if (post != null) {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try (Session session = this.sessionFactory.openSession()) {
         transaction = session.beginTransaction();
         session.save(post);//
         transaction.commit();
         return post;
         } catch (Exception e) {
-        if (transaction != null) {
-        }
+            if (transaction != null) {
+                System.out.println("");
+            }
         e.printStackTrace();
-        } finally {
-        session.close();
         }
         }
         return null;
@@ -65,9 +56,8 @@ public  Post save(Post post){
 
 //4
     public Post update(Post post) {//    public void updateTag(long id, String name) {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try (Session session = this.sessionFactory.openSession()){
             transaction = session.beginTransaction();
             Post post1 = new Post(post.getId(), post.getContent(),post.getTags(),post.getStatus());
             session.update(post1);
@@ -75,42 +65,37 @@ public  Post save(Post post){
             return post1;
         }
         catch (Exception e){
-            if(transaction !=null){}
+            if (transaction != null) {
+                System.out.println("");
+            }
             e.printStackTrace();
-        }finally {
-            session.close();
         }
         return null;
     }
+
 //3
     public  List<Post> getAll() {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-
+        try(Session session = this.sessionFactory.openSession()){
+            transaction =  session.beginTransaction();
             Query query = session.createQuery("from Post p Left Join FETCH p.tags ", Post.class);
             List<Post> postsList = query.getResultList();
-
-          //  List<Post> postsList = session.createQuery("from Post").list();// session.createQuery("FROM tags").list();
             transaction.commit();
             return postsList;
         }
         catch (Exception e){
-            if(transaction !=null){}
+            if (transaction != null) {
+                System.out.println("");
+            }
             e.printStackTrace();
-        }
-        finally {
-            session.close();
         }
         return null;
     }
 
 //2
     public void deleteById(Long id) {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try(Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             Post post = (Post) session.get(Post.class, id);
             for(Tag t: post.getTags()) {
@@ -121,10 +106,10 @@ public  Post save(Post post){
             transaction.commit();
                 }
         catch (Exception e){
-            if(transaction !=null){}
+            if (transaction != null) {
+                System.out.println("");
+            }
             e.printStackTrace();
-        }finally {
-            session.close();
         }
     }
 }

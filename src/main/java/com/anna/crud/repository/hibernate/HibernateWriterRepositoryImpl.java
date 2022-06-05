@@ -17,50 +17,43 @@ public class HibernateWriterRepositoryImpl implements WriterRepository {
 
     //5
     public Writer getById(Long id) {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try(Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-
             Query query = session.createQuery("from Writer w Left Join FETCH w.posts p left join fetch p.tags where w.id = "+ id , Writer.class);
             Writer writer = (Writer) query.getSingleResult();
             transaction.commit();
             return writer;
         } catch (Exception e) {
             if (transaction != null) {
+                System.out.println("");
             }
             e.printStackTrace();
-        } finally {
-            session.close();
         }
         return null;
     }
 
     //1
-    public  Writer save(Writer writer){
-System.out.println(writer);
-            Session session = this.sessionFactory.openSession();
+    public  Writer save(Writer writer){ //System.out.println(writer);
             Transaction transaction = null;
-            try {
+            try (Session session = this.sessionFactory.openSession()){
                 transaction = session.beginTransaction();
                 session.save(writer);//
                 transaction.commit();
                 return writer;
             } catch (Exception e) {
                 if (transaction != null) {
+                    System.out.println("");
                 }
                 e.printStackTrace();
-            } finally {
-                session.close();
             }
         return null;
     }
 
     //4
     public Writer update(Writer writer) {//    public void updateTag(long id, String name) {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try(Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             Writer writer1 = new Writer(writer.getId(),writer.getName(),writer.getPosts());
             session.update(writer1);
@@ -68,42 +61,37 @@ System.out.println(writer);
             return writer1;
         }
         catch (Exception e){
-            if(transaction !=null){}
+            if (transaction != null) {
+                System.out.println("");
+            }
             e.printStackTrace();
-        }finally {
-            session.close();
         }
         return null;
     }
 
     //3
     public List<Writer> getAll() {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try (        Session session = this.sessionFactory.openSession()){
             transaction = session.beginTransaction();
-
             Query query = session.createQuery("from Writer w Left Join FETCH w.posts p left join fetch p.tags", Writer.class);
             List<Writer> writers = query.getResultList();
-
             transaction.commit();
             return writers;
         }
         catch (Exception e){
-            if(transaction !=null){}
+            if (transaction != null) {
+                System.out.println("");
+            }
             e.printStackTrace();
-        }
-        finally {
-            session.close();
         }
         return null;
     }
 
     //2
     public void deleteById(Long id) {
-        Session session = this.sessionFactory.openSession();
         Transaction transaction = null;
-        try {
+        try (  Session session = this.sessionFactory.openSession()){
             transaction = session.beginTransaction();
             Writer writer = (Writer) session.get(Writer.class, id);
             for(Post post: writer.getPosts()) {
@@ -114,10 +102,10 @@ System.out.println(writer);
             transaction.commit();
         }
         catch (Exception e){
-            if(transaction !=null){}
+            if (transaction != null) {
+                System.out.println("");
+            }
             e.printStackTrace();
-        }finally {
-            session.close();
         }
     }
 }
