@@ -17,4 +17,4 @@ PostStatus (enum ACTIVE, DELETED)
     БД реализована с помощью flyway
     Сервисный слой приложения покрыт юнит тестами (junit + mockito)
 
-Технологии: Java, PostgreSQL, Hibernate, Flyway, Maven.
+Технологии: Java, MySQL, Hibernate, Flyway, Maven.
